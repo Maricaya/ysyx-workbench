@@ -1,8 +1,18 @@
-all:
-	@echo "Write this Makefile by your self."
+VERILATOR = verilator
+VERILATOR_FLAGS = --cc --exe --build -Wall --trace
 
-sim:
-	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@echo "Write this Makefile by your self."
+all: top_tb
 
-include ../Makefile
+top_tb: ./vsrc/top.v ./csrc/main.cpp
+	$(VERILATOR) $(VERILATOR_FLAGS) ./vsrc/top.v ./csrc/main.cpp
+
+run: top_tb
+	./obj_dir/Vtop
+
+wave: run
+	gtkwave wave.vcd
+
+clean:
+	rm -rf obj_dir wave.vcd
+
+.PHONY: all run wave clean
